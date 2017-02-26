@@ -40,6 +40,9 @@ while 1:
         elif request == "get" and not fileExists(params):
             serverSocket.sendto("404", clientAddrPort)
             state = _S_INIT
+        else: 
+            serverSocket.sendto("close", clientAddrPort)
+            state = _S_INIT
         
     elif state == _S_WAIT:  
         if request == "ack":
@@ -51,8 +54,7 @@ while 1:
                     ackCount = 0
                 else:
                     serverSocket.sendto(fileCont[ackCount], clientAddrPort)
-                    state = _S_WAIT
-                    
+                    state = _S_WAIT     
             elif params < ackCount and params >= 0:
                 serverSocket.sendto(fileCont[params], clientAddrPort)
                 state = _S_WAIT

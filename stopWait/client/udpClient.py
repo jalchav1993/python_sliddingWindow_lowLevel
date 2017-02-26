@@ -11,12 +11,13 @@ _C_INIT = "c_initial"       # state definition: initial
 _C_WAIT = "c_waiting"       # state definition: waiting for data
 _C_ACK = "c_acking"  # state definition: accepting data
 # default params
-serverAddr = ('localhost', 50001)
+serverAddr = ('localhost', 50000)
 
 state = _C_INIT             # current state
 ackCount = 0                # count of successful transmit
-timeout = 1                 # timeout for socket thread
+timeout = .025                 # timeout for socket thread
 fileName = 'file1'          # file location
+packegeDropCount = 0
 
 while 1:
     print("sending")
@@ -28,7 +29,7 @@ while 1:
         message = buildRequest("ack", ackCount)
         
     clientSocket = socket(AF_INET, SOCK_DGRAM)
-    clientSocket.settimeout(5)
+    clientSocket.settimeout(timeout)
     response = ''
     serverAddrPort =''
     try:
@@ -36,6 +37,10 @@ while 1:
         response, serverAddrPort = clientSocket.recvfrom(2048)
     except:
         print("519 timedout, trying again")
+        if state != _C_INIT:
+            state = _C_WAIT
+        packegeDropCount += .005
+        timeout +=  packegeDropCount
     else:
         if response == "close":
             print("file transmission is over")
