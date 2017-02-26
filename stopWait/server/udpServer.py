@@ -43,14 +43,16 @@ while 1:
         
     elif state == _S_WAIT:  
         if request == "ack":
-            if ackCount not in fileCont:
-                serverSocket.sendto("close", clientAddrPort)
-                state = _S_INIT
-                ackCount = 0
-            elif params == ackCount:
+            if params == ackCount:
                 ackCount += 1
-                serverSocket.sendto(fileCont[ackCount], clientAddrPort)
-                state = _S_WAIT
+                if ackCount not in fileCont:
+                    serverSocket.sendto("close", clientAddrPort)
+                    state = _S_INIT
+                    ackCount = 0
+                else:
+                    serverSocket.sendto(fileCont[ackCount], clientAddrPort)
+                    state = _S_WAIT
+                    
             elif params < ackCount and params >= 0:
                 serverSocket.sendto(fileCont[params], clientAddrPort)
                 state = _S_WAIT
