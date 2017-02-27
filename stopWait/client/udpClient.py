@@ -80,8 +80,6 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
             break;
         elif response == "404":
             print ("404, unknown file")
-            packegeDropCount = .005
-            timeout =  .025
             usage()
             break;
         elif state == _C_INIT:
