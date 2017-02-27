@@ -17,11 +17,11 @@ _C_WAIT = "c_waiting"       # state definition: waiting for data
 _C_ACK = "c_acking"         # state definition: accepting data
 
 #object fields
-serverAddr = ('', 50001)
+serverAddr = ('', 50000)
 initRequest = buildRequest("get", "file1.txt")
 state = _C_INIT             # current state
 ackCount = 0                # count of successful transmit
-timeout = .025              # timeout for socket thread 
+timeout = 2              # timeout for socket thread 
 packegeDropCount = 0
 buffer = []
 bufferSize = 0.0
@@ -51,6 +51,8 @@ while 1:
     print("sending")
     print ("state: %s" % state)
     print ("ack[%s]" % ackCount)
+    if timeout > 10:
+        print('excesive timeout')
     if state == _C_INIT:
         message = initRequest     
     elif state == _C_WAIT or state == _C_ACK:
@@ -80,19 +82,26 @@ while 1:
             usage()
             break;
         elif state == _C_INIT:
-            responseArguments= response.split(':')
-            bufferSize = responseArguments[0]
-            buffer = [None]*int(bufferSize)
+            responseArguments= response.split('::')
+            bufferSize = int(responseArguments[0])
+            buffer = [None]*bufferSize
             buffer[0] = responseArguments[1]
             state = _C_ACK
+            if bufferSize >=500:
+                timeout = 4
+            elif bufferSize >=50:
+                timeout = .4
+            else:
+                timeout = .04
+            print ("response %s, %s" % (response, bufferSize))
         elif state == _C_WAIT:
             state = _C_ACK
         elif state == _C_ACK:
-            buffer[ackCount+1] = response
+            buffer[ackCount] = response
             ackCount += 1
             state = _C_ACK
-            
-        print(response)
+        progress = (float(ackCount)/bufferSize)*100
+        print("package: %d of %d progress:%f %%" % (ackCount, bufferSize, progress))
         clientSocket.close()
 print("full msg")
 
