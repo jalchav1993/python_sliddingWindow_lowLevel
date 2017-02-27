@@ -26,7 +26,7 @@ timeout = 2              # timeout for socket thread
 packegeDropCount = 0
 buffer = []
 bufferSize = 0.0
-tau = 1.0 #max timeout
+tau = 2.5 #max timeout
 #requests and usage
 try:
     args = sys.argv[1:]
@@ -100,7 +100,6 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
             else:
                 timeout = .04
                 tau = .5
-            print ("response %s, %s" % (response, bufferSize))
         elif state == _C_WAIT:
             state = _C_ACK
         elif state == _C_ACK:
