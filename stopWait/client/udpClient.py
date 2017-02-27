@@ -1,4 +1,5 @@
 #! /bin/python
+#Can Transmit 1m data
 import sys, re  
 from socket import *
 import json
@@ -47,7 +48,7 @@ try:
 except:
     usage()
     
-while 1:
+while 1: #Finite State Machine, Look at graphs and FSM pictures
     print("sending")
     print ("state: %s" % state)
     print ("ack[%s]" % ackCount)
@@ -69,6 +70,7 @@ while 1:
         print("519 timedout, trying again")
         if state != _C_INIT:
             state = _C_WAIT
+        #Slidding Window
         packegeDropCount += .005
         timeout +=  packegeDropCount
     else:
@@ -87,6 +89,7 @@ while 1:
             buffer = [None]*bufferSize
             buffer[0] = responseArguments[1]
             state = _C_ACK
+            #Slidding Window
             if bufferSize >=500:
                 timeout = 4
             elif bufferSize >=50:
