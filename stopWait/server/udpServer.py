@@ -72,7 +72,7 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
             print(fileSize)
             serverSocket.sendto("%d::%s"%(fileSize, fileBuffer[ackCount]), clientAddrPort)
             state = _S_WAIT
-        elif request == "get" and condition !=0:
+        elif request == "get" and condition ==0:
             serverSocket.sendto("404", clientAddrPort)
             state = _S_INIT
         else: 
