@@ -13,9 +13,7 @@ def jsonParseThis(request, params):
 # @funct jsonParseThis() manual parser for json inputs 
 # @return python representation of json
 def jsonDeParseThis(input):
-    #print input
-    #m = re.match(r"(?P<request>\w+) (?P<params>\w+)", input)
-    #m.groupdict()
-    m = re.match(r"{'request':'(?P<request>\w+)', 'params':'(?P<params>\w+)'}", input)
+    regExpression = re.compile(r"{'request':'(?P<request>\w+)', 'params':'(?P<params>\w+)'}")
+    m = re.match(regExpression, input)
     return m.groupdict()
 
