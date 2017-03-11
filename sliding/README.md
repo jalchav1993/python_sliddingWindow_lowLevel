@@ -15,6 +15,7 @@ My algorithm goes as fallows:
            window = 10
        else:
            window = 2
+-- the program increments the ack counter when it gets a new ack, ignores already acknoledged ack requestes, will only change state in a new request
 -- the client gets this measurement to report download percentage 
 -client side:
 -- the client will send a get request with a filename
@@ -29,4 +30,4 @@ the initial timeout(will be incremented as packeges are lost) and maxtimeout (to
             else:
                 timeout = .04
                 tau = .5
-								
+To test code, run udpClient.py, udpServer.py, and any of the proxy scripts concurrently. The program shows a report with throughput and rtt. Calculated RTT using time.time(). and throughput by dividing rtt over window.

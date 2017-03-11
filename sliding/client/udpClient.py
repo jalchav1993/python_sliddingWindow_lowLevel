@@ -7,6 +7,7 @@ from socket import *
 import json
 from array import array
 from jsonParse import *
+import time
 
 #prototypes and functions
 
@@ -56,9 +57,8 @@ except:
     usage()
 
 while 1: #Finite State Machine, Look at graphs and FSM pictures
-    print("sending")
-    print ("state: %s" % state)
-    print ("ack[%s]" % ackCount)
+    start = 0
+    end = 0
     if timeout > tau:
         print('excesive timeout')
     if state == _C_INIT:
@@ -72,6 +72,7 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
     response = ''
     serverAddrPort =''
     try:
+        start = time.time()
         clientSocket.sendto(message, serverAddr)
         response, serverAddrPort = clientSocket.recvfrom(2048)
     except:
@@ -81,6 +82,7 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
         #Slidding Window
         packegeDropCount += .005
         timeout +=  packegeDropCount
+        end = (time.time()-start)*1000
     else:
         if response == "close":
             print("file transmission is over")
@@ -112,8 +114,10 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
             buffer[ackCount] = response
             ackCount += 1
             state = _C_ACK
+        end = (time.time()-start)
         progress = (float(ackCount)/bufferSize)*100
-        print("package: %d of %d progress:%f %%" % (ackCount, bufferSize, progress))
+        throughput = bufferSize/end
+        print("package: %d of %d progress:%f RRL %d @ %dmb/s%%" % (ackCount, bufferSize, progress, end, throughput))
         clientSocket.close()
 print("full msg")
 
