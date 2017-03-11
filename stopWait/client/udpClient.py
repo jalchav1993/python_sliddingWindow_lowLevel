@@ -5,7 +5,7 @@ from socket import *
 import json
 from array import array
 #prototypes and functions
-
+print sys.path
 def buildRequest(requset, param):
     return json.dumps({'request':requset, 'params':param})
 def usage():

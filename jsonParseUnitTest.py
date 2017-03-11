@@ -16,21 +16,23 @@ def extractRequest(input):
     return json.loads(input)
 
 #testing json loads
-def testParsing():
-    expected = buildRequest("put", "file")
-    actual = jsonParseThis("put", "file")
+def testParsing(request, params):
+    expected = buildRequest(request, params)
+    actual = jsonParseThis(request, params)
     print "expected %s \n"%expected
     print "actual %s \n"%actual
     return actual == expected
     
-def testDeparsing():
-    in_expected = buildRequest("put", "file")
-    in_actual = jsonParseThis("put", "file")
+def testDeparsing(request, params):
+    in_expected = buildRequest(request, params)
+    in_actual = jsonParseThis(request, params)
     expected = extractRequest(in_expected)
     actual = jsonDeParseThis(in_actual)
     print "expected %s \n"%expected
     print "actual %s \n"%actual
     return actual == expected
     
-print "testing parsing %s" % testParsing()
-print "testing deparsing %s" % testDeparsing()
+print "testing parsing 'put', 'file.txt' %s" % testParsing("put", "file.txt")
+print "testing deparsing 'put', 'file.txt' %s" % testDeparsing("put", "file.txt")
+print "testing parsing 'ack', '0' %s" % testParsing("ack", "0")
+print "testing deparsing 'ack', '0' %s" % testDeparsing("ack", "0")

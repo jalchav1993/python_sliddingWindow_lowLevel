@@ -1,8 +1,11 @@
 #! /bin/python
+#! ../../jsonParse.py
+#from jsonParse import *
 from socket import *
 import sys
-import json
-    
+sys.path.append("../../")
+from jsonParse import *
+
 _S_INIT = 's_init'      #state where the server starts
 _S_SEND = 's_send'      #sending data
 _S_WAIT = 's_wait'      #waiting for acknoledgement
@@ -63,7 +66,7 @@ print "ready to receive"
 while 1: #Finite State Machine, Look at graphs and FSM pictures
     message, clientAddrPort = serverSocket.recvfrom(2048)
     print "from %s: rec'd '%s'" % (repr(clientAddrPort), message)
-    data = json.loads(message)
+    data = jsonDeParseThis(message)
     request = data['request']
     params = data['params']
     if state == _S_INIT: #init case, no connections
@@ -80,8 +83,11 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
             state = _S_INIT
         
     elif state == _S_WAIT:  #waiting for ack
+        print "request %s"%request
+        print "params %s"%params
+        print "test_2 %s"%(params==ackCount)
         if request == "ack":
-            if params == ackCount:
+            if int(params) == ackCount:
                 ackCount += 1
                 if ackCount >= len(fileBuffer) or fileBuffer[ackCount] == None:
                     serverSocket.sendto("close", clientAddrPort)
@@ -90,8 +96,8 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
                 elif fileBuffer[ackCount] != None:
                     serverSocket.sendto(fileBuffer[ackCount], clientAddrPort)
                     state = _S_WAIT 
-            elif params < ackCount and params >= 0 and fileBuffer[ackCount] != None:
-                serverSocket.sendto(fileBuffer[params], clientAddrPort)
+            elif int(params) < ackCount and int(params) >= 0 and fileBuffer[ackCount] != None:
+                serverSocket.sendto(fileBuffer[int(params)], clientAddrPort)
                 state = _S_WAIT
                 
         elif request == "get":

@@ -1,9 +1,13 @@
 #! /bin/python
+#! ./jsonParse.py
 #Can Transmit 1m data
 import sys, re  
+sys.path.append("../../")
 from socket import *
 import json
 from array import array
+from jsonParse import *
+
 #prototypes and functions
 
 def buildRequest(requset, param):
@@ -19,7 +23,9 @@ _C_ACK = "c_acking"         # state definition: accepting data
 
 #object fields
 serverAddr = ('', 50000)
-initRequest = buildRequest("get", "file1.txt")
+#initRequest = buildRequest("get", "file1.txt")
+initRequest = jsonParseThis("get", "file1.txt")
+
 state = _C_INIT             # current state
 ackCount = 0                # count of successful transmit
 timeout = 2              # timeout for socket thread 
@@ -58,7 +64,8 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
     if state == _C_INIT:
         message = initRequest     
     elif state == _C_WAIT or state == _C_ACK:
-        message = buildRequest("ack", ackCount)
+        #message = buildRequest("ack", ackCount)
+        message = jsonParseThis("ack", ackCount)
         
     clientSocket = socket(AF_INET, SOCK_DGRAM)
     clientSocket.settimeout(timeout)
@@ -83,6 +90,7 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
             usage()
             break;
         elif state == _C_INIT:
+            print "test1 %s"%response
             responseArguments= response.split('::')
             bufferSize = int(responseArguments[0])
             buffer = [None]*bufferSize
