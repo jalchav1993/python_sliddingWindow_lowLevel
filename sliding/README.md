@@ -15,4 +15,18 @@ My algorithm goes as fallows:
            window = 10
        else:
            window = 2
--- the client gets this measurement to report download percentage %
+-- the client gets this measurement to report download percentage 
+-client side:
+-- the client will send a get request with a filename
+-- when the server responds with init segment and the size of the window, the client will set up
+the initial timeout(will be incremented as packeges are lost) and maxtimeout (to test when the timeout was incremented exponentially and needs to break from loop because of likely unsuccesful app) 
+            if bufferSize >=500:
+                timeout = 4
+                tau = 12
+            elif bufferSize >=50:
+                timeout = .4
+                tau = 1.2
+            else:
+                timeout = .04
+                tau = .5
+								
