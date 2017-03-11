@@ -117,7 +117,7 @@ while 1: #Finite State Machine, Look at graphs and FSM pictures
         end = (time.time()-start)
         progress = (float(ackCount)/bufferSize)*100
         throughput = bufferSize/end
-        print("package: %d of %d progress:%f RRL %d @ %dmb/s%%" % (ackCount, bufferSize, progress, end, throughput))
+        print("package: %d of %d progress:%f RRL %d @ %db/s%%" % (ackCount, bufferSize, progress, end, throughput))
         clientSocket.close()
 print("full msg")
 
